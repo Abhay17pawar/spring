@@ -1,10 +1,11 @@
 package com.ecommerce.website.service;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ecommerce.website.model.Product;
 import com.ecommerce.website.repo.ProductRepo;
@@ -19,7 +20,28 @@ public class ProductService {
         return productRepo.findAll();
     }
 
-    public Optional<Product> getProductById(int Id) {
-        return productRepo.findById(Id);
+    public Product getProductById(int Id) {
+        return productRepo.findById(Id).orElse(null);
     }
+
+    public Product addProduct(Product product, MultipartFile image) throws IOException {
+
+        product.setImageName(image.getOriginalFilename());
+        product.setImageType(image.getContentType());
+        product.setImageData(image.getBytes());
+        return productRepo.save(product);
+
+    }
+
+    public Product updateProduct(Product product, MultipartFile image) throws IOException{
+         product.setImageName(image.getOriginalFilename());
+        product.setImageType(image.getContentType());
+        product.setImageData(image.getBytes());
+        return productRepo.save(product);
+    }
+
+    public void deleteProduct(int id) throws IOException {
+        productRepo.deleteById(id);
+    } 
+
 }
